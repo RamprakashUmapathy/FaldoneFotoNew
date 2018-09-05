@@ -1,0 +1,90 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Faldone Foto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Faldone Foto" />
+    <meta name="keywords" content="Faldone, Faldone Foto" />
+    <meta name="author" content="Kasanova SpA" />
+    <link rel="shortcut icon" href="favicon.ico">
+    @*<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">*@
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("DevExpressScripts", false) @*Required for DevExpress Scripts on head otherwise MVC Extension scripts like CardView wont work*@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", false)
+</head>
+<body>
+    <div id="colorlib-page">
+        <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+        <aside id="colorlib-aside" role="complementary" class="border js-fullheight">
+            <h1 id="colorlib-logo">@Html.ActionLink("Faldone Foto", "Index", "Home")</h1>
+            <nav id="colorlib-main-menu" role="navigation">
+                <ul>
+                    <li>
+                        <a href="@Url.Action("Index", "Home")">
+                            <img alt="Home" src="~/Content/images/home.png"> Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Home")">
+                            <img alt="Home" src="~/Content/images/star.png"> Preferiti
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Search", "Home")">
+                            <img alt="Favourites" src="~/Content/images/search-icon.png"> Ricerca
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            @RenderSection("SidebarSection", false)
+            <div class="colorlib-footer">
+                <p>
+                    <small class="center-block">
+                        <img src="~/Content/images/LOGOKASANOVASPA.png" class="img-fluid img-responsive img-rounded" alt="Logo Kasanova">
+                    </small>
+                </p>
+                <p>
+                    <small>
+                        &copy; <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy; <a href="https://www.kasanova.it" target="_blank">Kasanova Spa</a>
+                    </small>
+                </p>
+                <p>
+                    <small>
+                        &copy; <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;
+                        @DateTime.Today.Year Made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                    </small>
+                </p>
+                @*<ul>
+            <li><a href="#"><i class="icon-earth"></i></a></li>
+            <li><a href="#"><i class="icon-twitter2"></i></a></li>
+            <li><a href="#"><i class="icon-instagram"></i></a></li>
+            <li><a href="#"><i class="icon-linkedin2"></i></a></li>
+        </ul>*@
+            </div>
+        </aside>
+        <div id="colorlib-main">
+            <div class="colorlib-work">
+                <div class="colorlib-narrow-content">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryeasing")
+    @Scripts.Render("~/bundles/jquerywaypoints")
+    @Scripts.Render("~/bundles/jqueryflexslider")
+    @Scripts.Render("~/bundles/owlcarousel")
+    @*@Scripts.Render("~/bundles/stickkit")*@
+    @Scripts.Render("~/bundles/jquerycount")
+    @Scripts.Render("~/bundles/main")
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

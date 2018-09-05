@@ -1,0 +1,6 @@
+﻿.footer-logo {
+    background-image: url('images/LOGO KASANOVA SPA.png');
+}
+.icon-earth:before {
+    content: "\e9ca";
+}

@@ -1,0 +1,303 @@
+@using System.Web.UI.WebControls;
+@using System.Drawing;
+
+@{
+
+    Action<CardViewSettings> AddColumns = (CardViewSettings settings) =>
+    {
+        settings.KeyFieldName = "Id";
+        settings.Columns.Add("Id");
+        settings.Columns.Add("Description");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "PhotoUrl";
+            c.ColumnType = MVCxCardViewColumnType.Image;
+            c.EditorProperties().Image(i => { i.ImageWidth = Unit.Pixel(250); i.ImageHeight = Unit.Pixel(250); });
+            c.SetDataItemTemplateContent(dc =>
+            {
+
+                Html.DevExpress().ImageZoom(zoom =>
+                {
+                    string imageUrl = DataBinder.Eval(dc.DataItem, "PhotoUrl") as string;
+                    zoom.Width = Unit.Pixel(200);
+                    zoom.Height = Unit.Pixel(200);
+                    zoom.Name = "zoom" + dc.ID;
+                    zoom.ImageUrl = DataBinder.Eval(dc.DataItem, "PhotoUrl") as string;
+                    zoom.LargeImageLoadMode = LargeImageLoadMode.Direct;
+                    zoom.LargeImageUrl = DataBinder.Eval(dc.DataItem, "LargePhotoUrl") as string;
+                    zoom.SettingsZoomMode.ZoomWindowWidth = Unit.Pixel(400);
+                    zoom.SettingsZoomMode.ZoomWindowHeight = Unit.Pixel(400);
+                    zoom.SettingsZoomMode.MouseBoxOpacityMode = MouseBoxOpacityMode.Outside;
+                    zoom.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                    zoom.ShowHintText = false;
+                    zoom.EncodeHtml = false;
+                    zoom.EnableZoomMode = false;
+                    string text = string.Concat(DataBinder.Eval(dc.DataItem, "Id") as string, " - ", DataBinder.Eval(dc.DataItem, "Description") as string);
+                    zoom.ExpandWindowText = text;
+                }).GetHtml();
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Chalco";
+            c.ColumnType = MVCxCardViewColumnType.Image;
+            c.EditorProperties().Image(i =>
+            {
+                i.ImageWidth = Unit.Pixel(15);
+                i.ImageHeight = Unit.Pixel(15);
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Video";
+            c.ColumnType = MVCxCardViewColumnType.HyperLink;
+            c.EditorProperties().HyperLink(i =>
+            {
+                i.ImageWidth = Unit.Pixel(15);
+                i.ImageHeight = Unit.Pixel(15);
+            });
+            c.SetDataItemTemplateContent(i =>
+            {
+                Html.DevExpress().Image(img =>
+                {
+                    string id = DataBinder.Eval(i.DataItem, "Id") as string;
+                    img.Name = "img" + id;
+                    var url = DataBinder.Eval(i.DataItem, "Video") as string;
+
+                    string baseUrl = DataBinder.Eval(i.DataItem, "Youtube") as string;
+                    img.Properties.ClientSideEvents.Click = $"function(s, e) {{ window.open('{baseUrl}','{id}'); }}";
+                    img.ImageUrl = HttpUtility.UrlDecode(url);
+                    img.Width = 15;
+                    img.Height = 15;
+
+                }).GetHtml();
+            });
+        });
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "DirectDelivery";
+            c.ColumnType = MVCxCardViewColumnType.Image;
+            c.EditorProperties().Image(i =>
+            {
+                i.ImageWidth = Unit.Pixel(15);
+                i.ImageHeight = Unit.Pixel(15);
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "PrivateLabel";
+            c.ColumnType = MVCxCardViewColumnType.Image;
+            c.EditorProperties().Image(i =>
+            {
+                i.ImageWidth = Unit.Pixel(15);
+                i.ImageHeight = Unit.Pixel(15);
+            });
+        });
+        settings.Columns.Add("Dimensions");
+        settings.Columns.Add("WeightInString");
+        settings.Columns.Add("Materials");
+        settings.Columns.Add("GrossSalesPriceF");
+        settings.Columns.Add("Line");
+        settings.Columns.Add("GrossRetailPriceF");
+        settings.Columns.Add("StockArrivalDate");
+        settings.Columns.Add("RetailDiscountPercentageF");
+        settings.Columns.Add("StockArrivalQty");
+        settings.Columns.Add("NetRetailPriceF");
+        settings.CardLayoutProperties.Items.AddGroupItem(g =>
+        {
+            g.Width = Unit.Percentage(100);
+            g.Height = Unit.Percentage(100);
+    //g.Visible = ViewBag.IsCardView;
+    g.ColumnCount = 6;
+            g.Name = "CardViewGroup";
+            g.ShowCaption = DefaultBoolean.False;
+            g.Items.Add(new CardViewCommandLayoutItem()
+            {
+                ShowSelectCheckbox = true,
+                HorizontalAlign = FormLayoutHorizontalAlign.Left,
+                VerticalAlign = FormLayoutVerticalAlign.Top,
+                ColumnSpan = 6
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "PhotoUrl";
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.ShowCaption = DefaultBoolean.False;
+                i.ColumnSpan = 6;
+                i.ParentContainerStyle.BackColor = Color.White;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Description";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Bold = true;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.Height = Unit.Pixel(30); //For Description minimum height is required
+        i.ColumnSpan = 6;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Id";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 2;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Chalco";
+                i.ShowCaption = DefaultBoolean.False;
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 1;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Video";
+                i.ShowCaption = DefaultBoolean.False;
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 1;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "DirectDelivery";
+                i.ShowCaption = DefaultBoolean.False;
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 1;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "PrivateLabel";
+                i.ShowCaption = DefaultBoolean.False;
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 1;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Dimensions";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Italic = true;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.ParentContainerStyle.ForeColor = Color.Gray;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "WeightInString";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Italic = true;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.ParentContainerStyle.ForeColor = Color.Gray;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Materials";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Bold = true;
+                i.ParentContainerStyle.Font.Italic = true;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.ParentContainerStyle.ForeColor = Color.Gray;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.Height = Unit.Pixel(30); // For materials minimum height is required
+        i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "GrossSalesPriceF";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Bold = true;
+                i.ParentContainerStyle.ForeColor = Color.DeepSkyBlue;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.Height = Unit.Pixel(30);
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Line";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.ForeColor = Color.Green;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "GrossRetailPriceF";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "StockArrivalDate";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "RetailDiscountPercentageF";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Bold = true;
+                i.ParentContainerStyle.ForeColor = Color.Red;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "StockArrivalQty";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "NetRetailPriceF";
+                i.ShowCaption = DefaultBoolean.False;
+                i.ParentContainerStyle.Font.Bold = true;
+                i.ParentContainerStyle.BackColor = Color.White;
+                i.ColumnSpan = 3;
+            });
+        });
+        settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 60;
+
+    };
+}
+
+@using System.Web.UI.WebControls;
+@{
+    var cardView = Html.DevExpress().CardView(settings =>
+    {
+        settings.Name = "cardView";
+        settings.CallbackRouteValues= new  {
+            Controller = "Home",
+            Action = "CardViewPartial"
+        };
+
+        AddColumns(settings);
+
+        settings.Settings.ShowHeaderPanel = true;
+        settings.Settings.ShowHeaderFilterButton = true;
+
+        settings.Settings.LayoutMode = DevExpress.Web.Layout.Breakpoints;
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.CardsPerRow = 4;
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.XLarge, 4);
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Large, 4);
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Medium, 3);
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Small, 2);
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(450, 1);
+        settings.SettingsPager.Mode = GridViewPagerMode.EndlessPaging;
+        settings.SettingsPager.EndlessPagingMode = CardViewEndlessPagingMode.OnClick;
+        settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 40;
+        settings.Styles.BreakpointsCard.Height = Unit.Percentage(100);
+
+    });
+}
+@cardView.Bind(Model).GetHtml()
+

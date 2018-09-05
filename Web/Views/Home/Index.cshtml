@@ -1,0 +1,108 @@
+﻿@model Web.ViewModels.HomeViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+@section styles
+{
+    @Html.DevExpress().GetStyleSheets(new StyleSheet { ExtensionSuite = ExtensionSuite.CardView })
+}
+@section DevExpressScripts{
+    @Html.DevExpress().GetScripts(new Script { ExtensionSuite = ExtensionSuite.CardView })
+    <script type="text/javascript">
+        function UpdateCardViewHeight() {
+            cardView.SetHeight(0);
+            var containerHeight = ASPxClientUtils.GetDocumentClientHeight();
+            if (document.body.scrollHeight > containerHeight)
+                containerHeight = document.body.scrollHeight;
+            cardView.SetHeight(containerHeight);
+        }
+    </script>
+}
+<form method="post">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="form-row">
+                <div class="form-group-sm col-md-2">
+                    @if (Model.User.CanViewShopSigns == true)
+                    {
+                        <label for="ShopSignId" class="text-muted">Insegna</label>
+                        @Html.DropDownListFor(f => f.ShopSignId, Model.ShopSigns, new { @class = "form-control" })
+                    }
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="CategoryId">Categoria</label>
+                    @Html.DropDownListFor(f => f.CategoryId, Model.Categories, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="FamilyId">Famiglia</label>
+                    @Html.DropDownListFor(f => f.FamilyId, Model.Families, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="SeriesId">Serie</label>
+                    @Html.DropDownListFor(f => f.SeriesId, Model.Series, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-4">
+                    <label for="Level1Id">Livello 1</label>
+                    @Html.DropDownListFor(f => f.Level1Id, Model.Level1s, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group-sm col-md-2">
+                    <label for="Level2Id">Livello 2</label>
+                    @Html.DropDownListFor(f => f.Level2Id, Model.Level2s, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="WebEnabledId">Disponibile sul web</label>
+                    @Html.DropDownListFor(f => f.WebEnabledId, Model.WebEnabledItems, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="VideoAvailableId">Video disponibile</label>
+                    @Html.DropDownListFor(f => f.VideoAvailableId, Model.VideoAvailableItems, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-4">
+                    <label for="">Ritiro obbligatorio</label>
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="WareHouseNameId">Magazzino</label>
+                    @Html.DropDownListFor(f => f.WareHouseNameId, Model.WareHouseItems, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group-sm col-md-2">
+                    <label for="">Consegna diretta</label>
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="ChalcoId">Presente in Chalco</label>
+                    @Html.DropDownListFor(f => f.ChalcoId, Model.ChalcoItems, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="PhotoId">Articoli con foto</label>
+                    @Html.DropDownListFor(f => f.PhotoId, Model.PhotoItems, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-2">
+                    <label for="PhotoId">Tipo colore</label>
+                    @Html.DropDownListFor(f => f.ColorId, Model.ColorItems, new { @class = "form-control" })
+                </div>
+                <div class="form-group-sm col-md-1">
+                    <label for="ButSearch">&nbsp;</label>
+                    <button name="ButSearch" type="submit" class="btn btn-primary"><i class="fa icon-search3"></i> Cerca</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @if (Request.HttpMethod == "POST")
+            {
+                @Html.Partial("_CardViewPartial", Model.Articles)
+                <script type="text/javascript">
+                    ASPxClientControl.GetControlCollection().ControlsInitialized.AddHandler(function (s, e) {
+                        UpdateCardViewHeight();
+                    });
+                    ASPxClientControl.GetControlCollection().BrowserWindowResized.AddHandler(function (s, e) {
+                        UpdateCardViewHeight();
+                    });
+                </script>
+            }
+        </div>
+    </div>
+</form>
+
