@@ -9,45 +9,45 @@ using System.Threading.Tasks;
 
 namespace InfraStrucure.Repositories
 {
-    public class ArticlePriceRepositoryAsync : IArticlePriceRepositoryAsync
+    public class PriceListRepositoryAsync : IPriceListRepositoryAsync
     {
-        public Task<ArticlePrice> AddAsync(ArticlePrice entity)
+        public Task<PriceList> AddAsync(PriceList entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Create(ArticlePrice item)
+        public void Create(PriceList item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(ArticlePrice item)
+        public void Delete(PriceList item)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(ArticlePrice entity)
+        public Task DeleteAsync(PriceList entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ArticlePrice> GetByIdAsync(string id)
+        public Task<PriceList> GetByIdAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ArticlePrice>> ListAllAsync()
+        public Task<IEnumerable<PriceList>> ListAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ArticlePrice>> ListAsync(dynamic parameters)
+        public async Task<IEnumerable<PriceList>> ListAsync(dynamic parameters)
         {
-            List<ArticlePrice> list = new List<ArticlePrice>();
+            List<PriceList> list = new List<PriceList>();
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
                 con.Open();
-                var gridReader = await con.QueryAsync<ArticlePrice>("dbo.ArticleShopSignsList",
+                var gridReader = await con.QueryAsync<PriceList>("dbo.ArticleShopSignsList",
                                                                 param: (object)parameters,
                                                                 commandType: CommandType.StoredProcedure);
                 return gridReader;
@@ -55,7 +55,7 @@ namespace InfraStrucure.Repositories
 
         }
 
-        public Task UpdateAsync(ArticlePrice entity)
+        public Task UpdateAsync(PriceList entity)
         {
             throw new NotImplementedException();
         }

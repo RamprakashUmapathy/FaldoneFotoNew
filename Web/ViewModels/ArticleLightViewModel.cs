@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Web.ViewModels
 {
@@ -6,14 +7,18 @@ namespace Web.ViewModels
     {
         private const string PhotoBaseUrl = "~/api/images/{0}";
 
+        [DisplayName("Codice articolo")]
         public string Id { get; set; }
 
+        [DisplayName("Descrizione")]
         public string Description { get; set; }
 
         public string NameAlias { get; set; }
 
+        [DisplayName("Materiali")]
         public string Materials { get; set; }
 
+        [DisplayName("Linea")]
         public string Line { get; set; }
 
         public string PhotoUrl { get { return string.Format(PhotoBaseUrl, Id); } }
@@ -32,8 +37,8 @@ namespace Web.ViewModels
 
         public decimal GrossSalesPrice { get; set; }
 
-        public string GrossSalesPriceF { get { return string.Format("List. Acq. : € {0:N2}", GrossSalesPrice); } }
-
+        public string GrossSalesPriceF { get { return string.Format("List.Acq : €{0:N2}", GrossSalesPrice); } }
+    
         public string StockArrivalDate { get; set; }
 
         public string StockArrivalQty { get; set; }
@@ -46,7 +51,7 @@ namespace Web.ViewModels
             {
                 if (_chalco == null)
                 {
-                    _chalco = HasPhotoInChalco ? "~/Content/Images/camera.png" : "~/Content/Images/blank.gif";
+                    _chalco = HasPhotoInChalco ? "~/Content/Images/camera.png" : "";
                 }
                 return _chalco;
             }
@@ -118,13 +123,24 @@ namespace Web.ViewModels
 
         public decimal NetRetailPrice { get; set; }
 
+        [DisplayName("Prezzo")]
         public string NetRetailPriceF { get { return string.Format("€ {0:N2}", NetRetailPrice); } }
 
-        public string Video { get { return HasVideo ? "~/Content/Images/video.png" : "~/Content/Images/blank.gif"; } }
+        public string Video { get { return HasVideo ? "~/Content/Images/video.png" : ""; } }
 
-        public string DirectDelivery { get { return IsDirectDelivery ? "~/Content/Images/delivery.png" : "~/Content/Images/blank.gif"; } }
+        public string DirectDelivery { get { return IsDirectDelivery ? "~/Content/Images/delivery.png" : ""; } }
 
-        public string PrivateLabel { get { return IsPrivateLabel ? "~/Content/Images/privatelabel.png" : "~/Content/Images/blank.gif"; } }
+        public string PrivateLabel { get { return IsPrivateLabel ? "~/Content/Images/privatelabel.png" : ""; } }
+
+        public string Tag { get; set; }
+
+        [DisplayName("Book")]
+        public string Book { get; set; }
+
+        [DisplayName("Disponibilità")]
+        public int StockQuantity { get; set; }
+
+        public int? VendorStockQuantity { get; set; }
 
     }
 }

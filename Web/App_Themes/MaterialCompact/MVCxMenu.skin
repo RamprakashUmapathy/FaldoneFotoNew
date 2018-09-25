@@ -1,0 +1,18 @@
+<%@ Register TagPrefix="dx" Namespace="DevExpress.Data" Assembly="DevExpress.Data.v18.1, Version=18.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" %>
+<%@ Register TagPrefix="dx" Namespace="DevExpress.Web" Assembly="DevExpress.Web.v18.1, Version=18.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" %>
+<%@ Register TagPrefix="dxmvc" Namespace="DevExpress.Web.Mvc" Assembly="DevExpress.Web.Mvc.v18.1, Version=18.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" %>
+
+<dxmvc:MVCxMenu runat="server" AutoSeparators="RootOnly" ItemSpacing="0px" ShowSubMenuShadow="True" SpriteCssFilePath="{0}/sprite.css" CssPostfix="MaterialCompact" CssFilePath="{0}/styles.css">
+</dxmvc:MVCxMenu>
+
+<dxmvc:MVCxMenu runat="server" SkinID="MenuButtons" SpriteCssFilePath="~/App_Themes/MaterialCompact/{0}/sprite.css" CssFilePath="~/App_Themes/MaterialCompact/{0}/styles.css"
+         AutoSeparators="None" ItemSpacing="5px" ShowPopOutImages="True" CssPostfix="MaterialCompact" CssClass="menuButtons menuButtons_MaterialCompact" SeparatorHeight="0px">
+    <Border BorderWidth="0px" />
+    <ItemStyle DropDownButtonSpacing="11px"></ItemStyle>
+    <RootItemSubMenuOffset X="-1" LastItemX="-1" FirstItemX="-1"></RootItemSubMenuOffset>
+    <SubMenuItemStyle Wrap="False"></SubMenuItemStyle>
+</dxmvc:MVCxMenu>
+<dxmvc:MVCxMenu runat="server" SkinID="MenuLinks" CssFilePath="~/App_Themes/MaterialCompact/{0}/styles.css" ItemSpacing="0px" ShowPopOutImages="True" 
+    CssPostfix="MaterialCompact" SpriteCssFilePath="~/App_Themes/MaterialCompact/{0}/sprite.css" SeparatorColor="#AECAF0" 
+    CssClass="menuLinks_MaterialCompact">
+</dxmvc:MVCxMenu>

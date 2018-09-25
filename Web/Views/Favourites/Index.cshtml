@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Preferiti";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section TopbarSection{
+    <nav class="collapse navbar-collapse" id="bs-navbar">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="@Url.Action("Index", "Favourites")"><img alt="Home" src="~/Content/images/favourite-star.png" /> <span id="favourites" class="badge">0</span></a>
+            </li>
+        </ul>
+    </nav>
+}

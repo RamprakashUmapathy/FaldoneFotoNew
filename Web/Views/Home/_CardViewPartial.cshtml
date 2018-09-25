@@ -6,31 +6,68 @@
     Action<CardViewSettings> AddColumns = (CardViewSettings settings) =>
     {
         settings.KeyFieldName = "Id";
-        settings.Columns.Add("Id");
-        settings.Columns.Add("Description");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Id";
+            c.Name = "colId";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.True;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "StockQuantity";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+            c.SetDataItemTemplateContent(dc =>
+            {
+                int stockQty = (int)DataBinder.Eval(dc.DataItem, "StockQuantity");
+                var hintText = $"<span class='label label-success'>{stockQty} pz</span>";
+                if (true)//(User.IsKasanova())
+                {
+                    int? vStockQty = DataBinder.Eval(dc.DataItem, "VendorStockQuantity") as int?;
+                    hintText = string.Concat(hintText, $"<span class='label label-warning'>{vStockQty.GetValueOrDefault(0)} pz</span>");
+                }
+                ViewContext.Writer.WriteLine(hintText);
+            });
+
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Description";
+            c.Name = "colDescription";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.True;
+        });
         settings.Columns.Add(c =>
         {
             c.FieldName = "PhotoUrl";
             c.ColumnType = MVCxCardViewColumnType.Image;
-            c.EditorProperties().Image(i => { i.ImageWidth = Unit.Pixel(250); i.ImageHeight = Unit.Pixel(250); });
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+            c.PropertiesEdit.Style.VerticalAlign = VerticalAlign.Top;
             c.SetDataItemTemplateContent(dc =>
             {
 
                 Html.DevExpress().ImageZoom(zoom =>
                 {
-                    string imageUrl = DataBinder.Eval(dc.DataItem, "PhotoUrl") as string;
-                    zoom.Width = Unit.Pixel(200);
-                    zoom.Height = Unit.Pixel(200);
+                    //string imageUrl = DataBinder.Eval(dc.DataItem, "PhotoUrl") as string;
+                    zoom.Width = Unit.Pixel(210);
+                    zoom.Height = Unit.Pixel(210);
                     zoom.Name = "zoom" + dc.ID;
                     zoom.ImageUrl = DataBinder.Eval(dc.DataItem, "PhotoUrl") as string;
                     zoom.LargeImageLoadMode = LargeImageLoadMode.Direct;
                     zoom.LargeImageUrl = DataBinder.Eval(dc.DataItem, "LargePhotoUrl") as string;
                     zoom.SettingsZoomMode.ZoomWindowWidth = Unit.Pixel(400);
                     zoom.SettingsZoomMode.ZoomWindowHeight = Unit.Pixel(400);
-                    zoom.SettingsZoomMode.MouseBoxOpacityMode = MouseBoxOpacityMode.Outside;
+                    zoom.SettingsZoomMode.ZoomWindowPosition = ZoomWindowPosition.Inside;
                     zoom.ControlStyle.Border.BorderStyle = BorderStyle.None;
-                    zoom.ShowHintText = false;
+                    zoom.ShowHintText = true;
                     zoom.EncodeHtml = false;
+                    zoom.HintText = " "; //hintText;
                     zoom.EnableZoomMode = false;
                     string text = string.Concat(DataBinder.Eval(dc.DataItem, "Id") as string, " - ", DataBinder.Eval(dc.DataItem, "Description") as string);
                     zoom.ExpandWindowText = text;
@@ -46,6 +83,9 @@
                 i.ImageWidth = Unit.Pixel(15);
                 i.ImageHeight = Unit.Pixel(15);
             });
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
         });
         settings.Columns.Add(c =>
         {
@@ -56,6 +96,9 @@
                 i.ImageWidth = Unit.Pixel(15);
                 i.ImageHeight = Unit.Pixel(15);
             });
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
             c.SetDataItemTemplateContent(i =>
             {
                 Html.DevExpress().Image(img =>
@@ -73,7 +116,6 @@
                 }).GetHtml();
             });
         });
-
         settings.Columns.Add(c =>
         {
             c.FieldName = "DirectDelivery";
@@ -82,7 +124,11 @@
             {
                 i.ImageWidth = Unit.Pixel(15);
                 i.ImageHeight = Unit.Pixel(15);
+                i.AlternateText = "Direct Delivery";
             });
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
         });
         settings.Columns.Add(c =>
         {
@@ -92,55 +138,153 @@
             {
                 i.ImageWidth = Unit.Pixel(15);
                 i.ImageHeight = Unit.Pixel(15);
+                i.AlternateText = "Private Label";
             });
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
         });
-        settings.Columns.Add("Dimensions");
-        settings.Columns.Add("WeightInString");
-        settings.Columns.Add("Materials");
-        settings.Columns.Add("GrossSalesPriceF");
-        settings.Columns.Add("Line");
-        settings.Columns.Add("GrossRetailPriceF");
-        settings.Columns.Add("StockArrivalDate");
-        settings.Columns.Add("RetailDiscountPercentageF");
-        settings.Columns.Add("StockArrivalQty");
-        settings.Columns.Add("NetRetailPriceF");
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Dimensions";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "WeightInString";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Materials";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.True;
+            c.Settings.ShowInFilterControl = DefaultBoolean.True;
+            c.Settings.AllowSort = DefaultBoolean.True;
+            c.SettingsHeaderFilter.Mode = GridHeaderFilterMode.CheckedList;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "GrossSalesPriceF";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Line";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.True;
+            c.Settings.ShowInFilterControl = DefaultBoolean.True;
+            c.Settings.AllowSort = DefaultBoolean.True;
+            c.SettingsHeaderFilter.Mode = GridHeaderFilterMode.CheckedList;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "GrossRetailPriceF";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "StockArrivalDate";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "RetailDiscountPercentageF";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "StockArrivalQty";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.False;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "NetRetailPriceF";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+            c.Settings.ShowInFilterControl = DefaultBoolean.False;
+            c.Settings.AllowSort = DefaultBoolean.True;
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Book";
+            c.Settings.AllowHeaderFilter = DefaultBoolean.True;
+            c.Settings.ShowInFilterControl = DefaultBoolean.True;
+            c.Settings.AllowSort = DefaultBoolean.True;
+            c.SettingsHeaderFilter.Mode = GridHeaderFilterMode.CheckedList;
+        });
+
+
         settings.CardLayoutProperties.Items.AddGroupItem(g =>
         {
+            //g.BackColor = Color.White;
             g.Width = Unit.Percentage(100);
             g.Height = Unit.Percentage(100);
-    //g.Visible = ViewBag.IsCardView;
-    g.ColumnCount = 6;
+            //g.Visible = ViewBag.IsCardView;
+            g.ColumnCount = 6;
             g.Name = "CardViewGroup";
             g.ShowCaption = DefaultBoolean.False;
+            g.GroupBoxDecoration = GroupBoxDecoration.None;
+            g.VerticalAlign = FormLayoutVerticalAlign.Top;
             g.Items.Add(new CardViewCommandLayoutItem()
             {
+                //BackColor = Color.White,
                 ShowSelectCheckbox = true,
-                HorizontalAlign = FormLayoutHorizontalAlign.Left,
+                HorizontalAlign = FormLayoutHorizontalAlign.Right,
                 VerticalAlign = FormLayoutVerticalAlign.Top,
                 ColumnSpan = 6
             });
             g.Items.Add(i =>
             {
+                i.BackColor = Color.White;
                 i.ColumnName = "PhotoUrl";
                 i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
                 i.ShowCaption = DefaultBoolean.False;
                 i.ColumnSpan = 6;
-                i.ParentContainerStyle.BackColor = Color.White;
+                //i.ParentContainerStyle.BackColor = Color.White;
             });
             g.Items.Add(i =>
             {
                 i.ColumnName = "Description";
                 i.ShowCaption = DefaultBoolean.False;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ParentContainerStyle.Font.Bold = true;
-                i.ParentContainerStyle.BackColor = Color.White;
                 i.Height = Unit.Pixel(30); //For Description minimum height is required
-        i.ColumnSpan = 6;
+                i.ColumnSpan = 6;
             });
+
             g.Items.Add(i =>
             {
                 i.ColumnName = "Id";
                 i.ShowCaption = DefaultBoolean.False;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
+                i.ColumnSpan = 3;
+            });
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "StockQuantity";
+                i.ShowCaption = DefaultBoolean.False;
+                i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
+                i.ColumnSpan = 3;
+            });
+
+            g.Items.Add(i =>
+            {
+                i.ColumnName = "Book";
+                i.ShowCaption = DefaultBoolean.False;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 2;
             });
             g.Items.Add(i =>
@@ -148,7 +292,7 @@
                 i.ColumnName = "Chalco";
                 i.ShowCaption = DefaultBoolean.False;
                 i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 1;
             });
             g.Items.Add(i =>
@@ -156,7 +300,7 @@
                 i.ColumnName = "Video";
                 i.ShowCaption = DefaultBoolean.False;
                 i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 1;
             });
             g.Items.Add(i =>
@@ -164,7 +308,7 @@
                 i.ColumnName = "DirectDelivery";
                 i.ShowCaption = DefaultBoolean.False;
                 i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 1;
             });
             g.Items.Add(i =>
@@ -172,7 +316,7 @@
                 i.ColumnName = "PrivateLabel";
                 i.ShowCaption = DefaultBoolean.False;
                 i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 1;
             });
             g.Items.Add(i =>
@@ -182,7 +326,7 @@
                 i.ParentContainerStyle.Font.Italic = true;
                 i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
                 i.ParentContainerStyle.ForeColor = Color.Gray;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
@@ -192,7 +336,7 @@
                 i.ParentContainerStyle.Font.Italic = true;
                 i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
                 i.ParentContainerStyle.ForeColor = Color.Gray;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
@@ -202,18 +346,17 @@
                 i.ParentContainerStyle.Font.Bold = true;
                 i.ParentContainerStyle.Font.Italic = true;
                 i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
-                i.ParentContainerStyle.ForeColor = Color.Gray;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.Height = Unit.Pixel(30); // For materials minimum height is required
-        i.ColumnSpan = 3;
+                i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
             {
                 i.ColumnName = "GrossSalesPriceF";
                 i.ShowCaption = DefaultBoolean.False;
                 i.ParentContainerStyle.Font.Bold = true;
-                i.ParentContainerStyle.ForeColor = Color.DeepSkyBlue;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.ParentContainerStyle.ForeColor = Color.Blue;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.Height = Unit.Pixel(30);
                 i.ColumnSpan = 3;
             });
@@ -222,7 +365,8 @@
                 i.ColumnName = "Line";
                 i.ShowCaption = DefaultBoolean.False;
                 i.ParentContainerStyle.ForeColor = Color.Green;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
 
@@ -230,30 +374,31 @@
             {
                 i.ColumnName = "GrossRetailPriceF";
                 i.ShowCaption = DefaultBoolean.False;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
             {
                 i.ColumnName = "StockArrivalDate";
                 i.ShowCaption = DefaultBoolean.False;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
             {
                 i.ColumnName = "RetailDiscountPercentageF";
                 i.ShowCaption = DefaultBoolean.False;
-                i.ParentContainerStyle.Font.Bold = true;
                 i.ParentContainerStyle.ForeColor = Color.Red;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
             {
                 i.ColumnName = "StockArrivalQty";
                 i.ShowCaption = DefaultBoolean.False;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.ParentContainerStyle.Font.Size = new FontUnit(Unit.Percentage(90));
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
             g.Items.Add(i =>
@@ -261,11 +406,12 @@
                 i.ColumnName = "NetRetailPriceF";
                 i.ShowCaption = DefaultBoolean.False;
                 i.ParentContainerStyle.Font.Bold = true;
-                i.ParentContainerStyle.BackColor = Color.White;
+                i.Paddings.PaddingBottom = Unit.Pixel(5);
                 i.ColumnSpan = 3;
             });
         });
-        settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 60;
+        //settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 60;
+        //settings.Styles.Table.Border.BorderStyle = BorderStyle.None;
 
     };
 }
@@ -275,10 +421,36 @@
     var cardView = Html.DevExpress().CardView(settings =>
     {
         settings.Name = "cardView";
-        settings.CallbackRouteValues= new  {
+        settings.Theme = "MaterialCompact";
+        settings.CallbackRouteValues = new
+        {
             Controller = "Home",
             Action = "CardViewPartial"
         };
+
+        settings.Toolbars.Add(tb =>
+        {
+            tb.EnableAdaptivity = true;
+            tb.Items.Add(i =>
+            {
+                i.Text = "Export";
+                i.Image.IconID = DevExpress.Web.ASPxThemes.IconID.ExportExport16x16;
+                i.Items.Add(CardViewToolbarCommand.ExportToPdf);
+                i.Items.Add(CardViewToolbarCommand.ExportToXlsx);
+            });
+            tb.Items.Add(i =>
+            {
+                i.Name = "custSelectAllOnPage";
+                i.Text = "Seleziona tutto";
+                i.BeginGroup = true;
+            });
+            tb.Items.Add(i =>
+            {
+                i.Name = "custUnselectAllOnPage";
+                i.Text = "Deseleziona tutto";
+                i.BeginGroup = true;
+            });
+        });
 
         AddColumns(settings);
 
@@ -287,15 +459,26 @@
 
         settings.Settings.LayoutMode = DevExpress.Web.Layout.Breakpoints;
         settings.SettingsAdaptivity.BreakpointsLayoutSettings.CardsPerRow = 4;
-        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.XLarge, 4);
-        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Large, 4);
-        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Medium, 3);
-        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(BreakpointsLayoutDeviceSizes.Small, 2);
-        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.Add(450, 1);
+
+        settings.SettingsAdaptivity.BreakpointsLayoutSettings.Breakpoints.AddRange(
+        new List<CardViewBreakpoint>()
+        {
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.Custom, MaxWidth = 3840 , CardsPerRow = 4 },
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.XLarge, CardsPerRow = 3 },
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.Large, CardsPerRow = 3 },
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.Medium, CardsPerRow = 2 },
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.Small, CardsPerRow = 2 },
+            new CardViewBreakpoint() { DeviceSize = BreakpointsLayoutDeviceSizes.XSmall, CardsPerRow = 1 }
+        });
+
         settings.SettingsPager.Mode = GridViewPagerMode.EndlessPaging;
         settings.SettingsPager.EndlessPagingMode = CardViewEndlessPagingMode.OnClick;
-        settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 40;
+        settings.SettingsPager.SettingsBreakpointsLayout.ItemsPerPage = 48;
+
         settings.Styles.BreakpointsCard.Height = Unit.Percentage(100);
+
+        settings.ClientSideEvents.ToolbarItemClick = "OnToolbarItemClick";
+        settings.ClientSideEvents.SelectionChanged = "OnCardSelectionChanged";
 
     });
 }

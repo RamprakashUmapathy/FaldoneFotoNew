@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ApplicationCore.Entity
 {
-    public class ArticlePrice
+    public class PriceList
     {
         public string ArticleId { get; private set; }
 
@@ -16,7 +16,7 @@ namespace ApplicationCore.Entity
 
         public bool IsMandatoryPickup { get; private set; }
 
-        public string TagName { get; private set; }
+        public string Tag { get; private set; }
 
         /// <summary>
         /// returns the gross retail price 

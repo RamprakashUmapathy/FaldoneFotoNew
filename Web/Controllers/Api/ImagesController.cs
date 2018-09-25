@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Web
+namespace Web.Controllers.Api
 {
     public class ImagesController : ApiController
     {

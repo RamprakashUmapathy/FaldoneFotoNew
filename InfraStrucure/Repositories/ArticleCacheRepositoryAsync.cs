@@ -9,9 +9,11 @@ namespace InfraStrucure.Repositories
 {
     public class ArticleCacheRepositoryAsync : ArticleRepositoryAsync
     {
+        private IStockGroupRepositoryAsync _stockGroupRepository;
         private MemoryCache _cache;
-        public ArticleCacheRepositoryAsync() : base()
+        public ArticleCacheRepositoryAsync(IStockGroupRepositoryAsync stockGroupRepository) : base()
         {
+            _stockGroupRepository = stockGroupRepository ?? throw new ArgumentNullException(nameof(stockGroupRepository));
             _cache = MemoryCache.Default;
         }
         public new async Task<IEnumerable<Article>> ListAllAsync()
@@ -23,7 +25,16 @@ namespace InfraStrucure.Repositories
             if (repositoryCache == null)
             {
                 repositoryCache = await base.ListAllAsync();
-                DateTime dt = DateTime.Today.AddDays(1).AddHours(8); //8:00 AM ivalidate cache
+                var stockGroups = await _stockGroupRepository.ListAllAsync();
+                IDictionary<string, Article> articleDictionary = repositoryCache.ToDictionary(a => a.Id, b => b);
+                foreach(StockGroup sg in stockGroups)
+                {
+                    if (articleDictionary.TryGetValue(sg.ArticleId, out Article art))
+                    {
+                        art.Add(sg);
+                    }
+                }
+                DateTime dt = DateTime.Today.AddDays(1).AddHours(9); //9:00 AM ivalidate cache
                 CacheItemPolicy policy = new CacheItemPolicy
                 {
                     AbsoluteExpiration = new DateTimeOffset(dt.Ticks, new TimeSpan(1, 0, 0))

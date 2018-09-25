@@ -8,7 +8,7 @@ namespace Web.Extensions
 {
     public static class CollectionExtensions
     {
-        public static IEnumerable<ArticleLightViewModel> ToArticlesViewModel(this IEnumerable<Article> coll, IEnumerable<ArticlePrice> articlePrices)
+        public static IEnumerable<ArticleLightViewModel> ToArticlesViewModel(this IEnumerable<Article> coll, IEnumerable<PriceList> articlePrices)
         {
             var results = new List<ArticleLightViewModel>();
             var articles = coll ?? throw new ArgumentNullException(nameof(coll));
@@ -19,6 +19,7 @@ namespace Web.Extensions
                                 p => p.ArticleId,
                                 (a, p) => new
                                 {
+                                    a.Book,
                                     a.Category,
                                     a.Id,
                                     a.Description,
@@ -41,6 +42,7 @@ namespace Web.Extensions
                                     a.IsMagentoEnabled,
                                     a.Style,
                                     a.Youtube,
+                                    a.StockGroups,
                                     p.IsDirectDelivery,
                                     p.IsMandatoryPickup,
                                     p.IsPrivateLabel,
@@ -48,7 +50,7 @@ namespace Web.Extensions
                                     p.GrossSalesPrice,
                                     p.NetRetailPrice,
                                     p.RetailDiscountPercentage,
-                                    p.TagName
+                                    p.Tag
                                 }
                             ).ToList();
 
@@ -56,6 +58,7 @@ namespace Web.Extensions
             {
                 results.Add(new ArticleLightViewModel()
                 {
+                    Book = a.Book,
                     HasPhotoInChalco = a.HasChalcoData,
                     Description = a.Description,
                     Depth = a.Depth,
@@ -73,7 +76,8 @@ namespace Web.Extensions
                     RetailDiscountPercentage = a.RetailDiscountPercentage,
                     Weight = a.Weight,
                     Width = a.Width,
-                    Youtube = a.Youtube
+                    Youtube = a.Youtube,
+                    Tag = a.Tag
                 });
             });
             return results;

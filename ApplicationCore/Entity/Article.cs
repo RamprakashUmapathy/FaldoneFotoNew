@@ -1,9 +1,18 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 
 namespace ApplicationCore.Entity
 {
     public class Article
     {
+        public Article()
+        {
+            StockGroupsList = new List<StockGroup>();
+        }
+
+        public string Book { get; set; }
         /// <summary>
         /// returns the article code
         /// </summary>
@@ -65,6 +74,11 @@ namespace ApplicationCore.Entity
         public bool HasPhoto { get; private set; }
 
         /// <summary>
+        /// returns whether the article has video or not
+        /// </summary>
+        public bool HasVideo { get { return !string.IsNullOrEmpty(Youtube); } }
+
+        /// <summary>
         /// returns whether the article has chalco data
         /// </summary>
         public bool HasChalcoData { get; private set; }
@@ -87,7 +101,7 @@ namespace ApplicationCore.Entity
         /// <summary>
         /// returns the vendor stock quantity
         /// </summary>
-        public int VendorStockQuantity { get; private set; }
+        public int? VendorStockQuantity { get; private set; }
 
 
         /// <summary>
@@ -175,6 +189,19 @@ namespace ApplicationCore.Entity
         /// returns true if the shop sign is ECommerce
         /// </summary>
         public bool IsECommerce { get; private set; }
+
+
+        private List<StockGroup> StockGroupsList { get; set; }
+        /// <summary>
+        /// returns the list of StockGroups with supply status
+        /// </summary>
+        public IReadOnlyCollection<StockGroup> StockGroups => new ReadOnlyCollection<StockGroup>(StockGroupsList.ToList());
+
+        public void Add(StockGroup stockGroup)
+        {
+            StockGroupsList.Add(stockGroup);
+        }
+
 
     }
 }

@@ -42,8 +42,8 @@ namespace Web.Controllers
                     .Where(u => u.ObjectId.Equals(userObjectID))
                     .ExecuteAsync();
                 IUser user = result.CurrentPage.ToList().First();
-
-                return View(user);
+                Response.Status = "403";
+                return View();
             }
             catch (AdalException)
             {

@@ -1,10 +1,11 @@
-﻿@model Web.ViewModels.HomeViewModel
+﻿@using System.Web.UI.WebControls;
+@model Web.ViewModels.HomeViewModel
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Faldone Foto - Home";
 }
 @section styles
 {
-    @Html.DevExpress().GetStyleSheets(new StyleSheet { ExtensionSuite = ExtensionSuite.CardView })
+    @Html.DevExpress().GetStyleSheets(new StyleSheet { ExtensionSuite = ExtensionSuite.CardView, Theme = "MaterialCompact" })
 }
 @section DevExpressScripts{
     @Html.DevExpress().GetScripts(new Script { ExtensionSuite = ExtensionSuite.CardView })
@@ -16,80 +17,320 @@
                 containerHeight = document.body.scrollHeight;
             cardView.SetHeight(containerHeight);
         }
+        function OnToolbarItemClick(s, e) {
+            switch (e.item.name) {
+                case 'custSelectAllOnPage':
+                    cardView.SelectAllCardsOnPage();
+                    break;
+                case 'custUnselectAllOnPage':
+                    cardView.UnselectAllCardsOnPage();
+                    break;
+            }
+        }
+        function OnCardSelectionChanged(s, e) {
+            s.GetSelectedFieldValues("Id", GetSelectedFieldValuesCallback);
+        }
+        function GetSelectedFieldValuesCallback(values) {
+            //alert(values);
+            var userSelect = "";
+            for (var i in values) {
+                userSelect = userSelect + values[i] + ";";
+            }
+            //cardView.PerformCallback({ selectedArticles: userSelect });
+
+            $("#favourites").html(cardView.GetSelectedCardCount());
+        }
     </script>
+}
+@section TopbarSection{
+    <nav class="collapse navbar-collapse" id="bs-navbar">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="@Url.Action("Index", "Favourites")"><img alt="Home" src="~/Content/images/favourite-star.png" /> <span id="favourites" class="badge">0</span></a>
+            </li>
+        </ul>
+    </nav>
 }
 <form method="post">
     <div class="container-fluid">
-        <div class="row">
+
+        @if (Model.User.CanViewShopSigns == true)
+        {
             <div class="form-row">
-                <div class="form-group-sm col-md-2">
-                    @if (Model.User.CanViewShopSigns == true)
-                    {
-                        <label for="ShopSignId" class="text-muted">Insegna</label>
-                        @Html.DropDownListFor(f => f.ShopSignId, Model.ShopSigns, new { @class = "form-control" })
-                    }
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="CategoryId">Categoria</label>
-                    @Html.DropDownListFor(f => f.CategoryId, Model.Categories, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="FamilyId">Famiglia</label>
-                    @Html.DropDownListFor(f => f.FamilyId, Model.Families, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="SeriesId">Serie</label>
-                    @Html.DropDownListFor(f => f.SeriesId, Model.Series, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-4">
-                    <label for="Level1Id">Livello 1</label>
-                    @Html.DropDownListFor(f => f.Level1Id, Model.Level1s, new { @class = "form-control" })
+                <div class="form-group-sm">
+                    @Html.LabelFor(f => f.ShopSignId, new { @class = "text-muted" })
+                    @Html.DropDownListFor(f => f.ShopSignId, Model.ShopSigns, new { @class = "form-control" })
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group-sm col-md-2">
-                    <label for="Level2Id">Livello 2</label>
-                    @Html.DropDownListFor(f => f.Level2Id, Model.Level2s, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="WebEnabledId">Disponibile sul web</label>
-                    @Html.DropDownListFor(f => f.WebEnabledId, Model.WebEnabledItems, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="VideoAvailableId">Video disponibile</label>
-                    @Html.DropDownListFor(f => f.VideoAvailableId, Model.VideoAvailableItems, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-4">
-                    <label for="">Ritiro obbligatorio</label>
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="WareHouseNameId">Magazzino</label>
-                    @Html.DropDownListFor(f => f.WareHouseNameId, Model.WareHouseItems, new { @class = "form-control" })
-                </div>
+        }
+        <div class="form-row">
+            <div class="form-group-sm col-md-2">
+                @Html.LabelFor(f => f.CategoryId)
+                @Html.DropDownListFor(f => f.CategoryId, Model.Categories, new { @class = "form-control" })
             </div>
-            <div class="form-row">
-                <div class="form-group-sm col-md-2">
-                    <label for="">Consegna diretta</label>
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="ChalcoId">Presente in Chalco</label>
-                    @Html.DropDownListFor(f => f.ChalcoId, Model.ChalcoItems, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="PhotoId">Articoli con foto</label>
-                    @Html.DropDownListFor(f => f.PhotoId, Model.PhotoItems, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-2">
-                    <label for="PhotoId">Tipo colore</label>
-                    @Html.DropDownListFor(f => f.ColorId, Model.ColorItems, new { @class = "form-control" })
-                </div>
-                <div class="form-group-sm col-md-1">
-                    <label for="ButSearch">&nbsp;</label>
-                    <button name="ButSearch" type="submit" class="btn btn-primary"><i class="fa icon-search3"></i> Cerca</button>
-                </div>
+            <div class="form-group-sm col-md-2">
+                @Html.LabelFor(f => f.FamilyId)
+                @Html.DropDownListFor(f => f.FamilyId, Model.Families, new { @class = "form-control" })
+            </div>
+            <div class="form-group-sm col-md-2">
+                @Html.LabelFor(f => f.SeriesId)
+                @Html.DropDownListFor(f => f.SeriesId, Model.Series, new { @class = "form-control" })
+            </div>
+            <div class="form-group-sm col-md-2">
+                @Html.LabelFor(f => f.Level1Id)
+                @Html.DropDownListFor(f => f.Level1Id, Model.Level1s, new { @class = "form-control" })
+            </div>
+            <div class="form-group-sm col-md-2">
+                @Html.LabelFor(f => f.Level2Id)
+                @Html.DropDownListFor(f => f.Level2Id, Model.Level2s, new { @class = "form-control" })
             </div>
         </div>
-        <div class="row">
+
+        <div class="form-row">
+            @Html.HiddenFor(f => f.RoundPanelCollapseState)
+            @{
+                Html.DevExpress().RoundPanel(settings =>
+                {
+                    settings.Name = "roundPanel";
+                    settings.Theme = "MaterialCompact";
+                    settings.AllowCollapsingByHeaderClick = true;
+                    settings.ShowCollapseButton = true;
+                    settings.Collapsed = Model.RoundPanelCollapseState.HasValue ? Model.RoundPanelCollapseState.Value : true;
+                    settings.HeaderText = "Altri filtri";
+                    settings.Collapsed = true;
+                    settings.Width = Unit.Percentage(100);
+                    settings.ClientSideEvents.Init = "function (s, e) {" +
+                                                                        "var state = $('#RoundPanelCollapseState').val();" +
+                                                                        "if(state != '') s.SetCollapsed(state);" +
+                                                                        "}";
+                    settings.ClientSideEvents.CollapsedChanged = "function (s, e) { $('#RoundPanelCollapseState').val(s.collapsed);}";
+                    settings.SetContent(() =>
+                    {
+                        ViewContext.Writer.WriteLine("<div class='form-row'>");
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.WebEnabledId));
+                        var webEnabledId = Html.DropDownListFor(f => f.WebEnabledId, Model.WebEnabledItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(webEnabledId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.VideoAvailableId));
+                        var videoAvailableId = Html.DropDownListFor(f => f.VideoAvailableId, Model.VideoAvailableItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(videoAvailableId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.MandatoryDeliveryId));
+                        var mandatoryDeliveryId = Html.DropDownListFor(f => f.MandatoryDeliveryId, Model.MandatoryDeliveryItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(mandatoryDeliveryId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.WareHouseNameId));
+                        var wareHouseNameId = Html.DropDownListFor(f => f.WareHouseNameId, Model.WareHouseItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(wareHouseNameId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.DirectDeliveryId));
+                        var directDeliveryId = Html.DropDownListFor(f => f.DirectDeliveryId, Model.DirectDeliveryItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(directDeliveryId);
+                        ViewContext.Writer.WriteLine("</div>");
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-row'>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.ChalcoId));
+                        var chalcoId = Html.DropDownListFor(f => f.ChalcoId, Model.ChalcoItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(chalcoId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.PhotoId));
+                        var photoId = Html.DropDownListFor(f => f.PhotoId, Model.PhotoItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(photoId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.PhotoId));
+                        var colorId = Html.DropDownListFor(f => f.ColorId, Model.ColorItems, new { @class = "form-control" }).ToHtmlString();
+                        ViewContext.Writer.WriteLine(photoId);
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Stilo filter
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.StyleId));
+                        ViewContext.Writer.WriteLine(Html.DevExpress().ListBoxFor(m => m.StyleItems,
+                                                            s =>
+                                                            {
+                                                                s.Name = "StyleId";
+                                                                s.Width = Unit.Pixel(90);
+                                                                s.Height = Unit.Pixel(120);
+                                                                s.Properties.ValueType = typeof(string);
+                                                                s.Properties.FilteringSettings.ShowSearchUI = true;
+                                                                s.Properties.SelectionMode = ListEditSelectionMode.CheckColumn;
+                                                                    //s.Properties.EnableSelectAll = true;
+                                                                }).BindList(Model.StyleItems).GetHtml().ToHtmlString());
+
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Assortimento filter
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.StockGroupId));
+                        ViewContext.Writer.WriteLine(Html.DevExpress().ListBoxFor(m => m.StockGroupId,
+                              s =>
+                              {
+                                  s.Width = Unit.Pixel(90);
+                                  s.Height = Unit.Pixel(120);
+                                  s.Properties.ValueType = typeof(string);
+                                  s.Properties.FilteringSettings.ShowSearchUI = true;
+                                  s.Properties.SelectionMode = ListEditSelectionMode.CheckColumn;
+                                      //s.Properties.EnableSelectAll = true;
+                                  }).BindList(Model.StockGroupItems).Bind(Model.StockGroupId).GetHtml().ToHtmlString());
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Approv
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.SupplyStatusId));
+                        Html.DevExpress().ListBoxFor(m => m.SupplyStatusId,
+                                                            s =>
+                                                            {
+                                                                s.Width = Unit.Pixel(90);
+                                                                s.Height = Unit.Pixel(120);
+                                                                s.Properties.ValueType = typeof(string);
+                                                                s.Properties.FilteringSettings.ShowSearchUI = true;
+                                                                s.Properties.SelectionMode = ListEditSelectionMode.CheckColumn;
+                                                                    //s.Properties.EnableSelectAll = true;
+                                                                }).BindList(Model.SupplyStatusItems).Bind(Model.SupplyStatusId).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Tag commerciale filter (DevExpress list)
+                            ViewContext.Writer.WriteLine("<div class='form-row'>");
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.TagId));
+                        Html.DevExpress().ListBoxFor(m => m.TagId,
+                                                            s =>
+                                                            {
+                                                                s.Width = Unit.Pixel(90);
+                                                                s.Height = Unit.Pixel(120);
+                                                                s.Properties.ValueType = typeof(string);
+                                                                s.Properties.FilteringSettings.ShowSearchUI = true;
+                                                                s.Properties.SelectionMode = ListEditSelectionMode.CheckColumn;
+                                                                    //s.Properties.EnableSelectAll = true;
+                                                                }).BindList(Model.TagItems).Bind(Model.TagId).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-row'>");
+
+                            //Prezzo da a
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.PriceRangeFrom));
+                        @Html.DevExpress().SpinEditFor(m => m.PriceRangeFrom,
+                            s =>
+                            {
+                                s.Properties.SpinButtons.ShowIncrementButtons = false;
+                                s.Properties.SpinButtons.ShowLargeIncrementButtons = false;
+                                s.Properties.LargeIncrement = 1;
+                                s.Properties.NumberFormat = SpinEditNumberFormat.Custom;
+                                s.Properties.DisplayFormatString = "N2";
+                                s.Properties.NumberType = SpinEditNumberType.Float;
+                                s.Properties.DecimalPlaces = 2;
+                                s.Properties.MaxValue = 9999.99M;
+                                s.Properties.MinValue = 0;
+                                s.Properties.MaxLength = 7;
+                            }).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.PriceRangeTo));
+                        @Html.DevExpress().SpinEditFor(m => m.PriceRangeTo,
+                            s =>
+                            {
+                                s.Properties.SpinButtons.ShowIncrementButtons = false;
+                                s.Properties.SpinButtons.ShowLargeIncrementButtons = false;
+                                s.Properties.LargeIncrement = 1;
+                                s.Properties.NumberFormat = SpinEditNumberFormat.Custom;
+                                s.Properties.DisplayFormatString = "N2";
+                                s.Properties.NumberType = SpinEditNumberType.Float;
+                                s.Properties.DecimalPlaces = 2;
+                                s.Properties.MaxValue = 9999.99M;
+                                s.Properties.MinValue = 0;
+                                s.Properties.MaxLength = 7;
+                            }).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Sconta da a
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.DiscountFrom));
+                        @Html.DevExpress().SpinEditFor(m => m.DiscountFrom,
+                            s =>
+                            {
+                                s.Properties.SpinButtons.ShowIncrementButtons = false;
+                                s.Properties.SpinButtons.ShowLargeIncrementButtons = false;
+                                s.Properties.LargeIncrement = 1;
+                                s.Properties.NumberFormat = SpinEditNumberFormat.Custom;
+                                s.Properties.DisplayFormatString = "N2";
+                                s.Properties.NumberType = SpinEditNumberType.Float;
+                                s.Properties.DecimalPlaces = 2;
+                                s.Properties.MaxValue = 100M;
+                                s.Properties.MinValue = 0;
+                                s.Properties.MaxLength = 5;
+                            }).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.DiscountTo));
+                        @Html.DevExpress().SpinEditFor(m => m.DiscountTo,
+                            s =>
+                            {
+                                s.Properties.SpinButtons.ShowIncrementButtons = false;
+                                s.Properties.SpinButtons.ShowLargeIncrementButtons = false;
+                                s.Properties.LargeIncrement = 1;
+                                s.Properties.NumberFormat = SpinEditNumberFormat.Custom;
+                                s.Properties.DisplayFormatString = "N2";
+                                s.Properties.NumberType = SpinEditNumberType.Float;
+                                s.Properties.DecimalPlaces = 2;
+                                s.Properties.MaxValue = 100M;
+                                s.Properties.MinValue = 0;
+                                s.Properties.MaxLength = 5;
+                            }).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                            //Disponibilità da
+                            ViewContext.Writer.WriteLine("<div class='form-group-sm col-md-2'>");
+                        ViewContext.Writer.WriteLine(Html.LabelFor(m => m.StockQty));
+                        @Html.DevExpress().SpinEditFor(m => m.StockQty,
+                            s =>
+                            {
+                                s.Properties.SpinButtons.ShowIncrementButtons = false;
+                                s.Properties.SpinButtons.ShowLargeIncrementButtons = false;
+                                s.Properties.LargeIncrement = 1;
+                                s.Properties.NumberFormat = SpinEditNumberFormat.Custom;
+                                s.Properties.NumberType = SpinEditNumberType.Integer;
+                                s.Properties.DecimalPlaces = 0;
+                                s.Properties.MaxValue = 99999M;
+                                s.Properties.MinValue = 0;
+                                s.Properties.MaxLength = 5;
+                            }).GetHtml();
+                        ViewContext.Writer.WriteLine("</div>");
+
+                        ViewContext.Writer.WriteLine("</div>");
+
+                    });
+                }).GetHtml();
+            }
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="form-row">
+            <div class="form-group-sm">
+                <label for="ButSearch">&nbsp;</label>
+                <button name="ButSearch" type="submit" class="btn btn-primary"><i class="fa icon-search3"></i> Cerca</button>
+            </div>
+        </div>
+        <div class="clearfix">&nbsp;</div>
+        <div class="form-row">
             @if (Request.HttpMethod == "POST")
             {
                 @Html.Partial("_CardViewPartial", Model.Articles)

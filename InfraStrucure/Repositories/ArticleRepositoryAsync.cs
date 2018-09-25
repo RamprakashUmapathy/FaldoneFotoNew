@@ -48,7 +48,7 @@ namespace InfraStrucure.Repositories
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
             {
                 con.Open();
-                var gridReader = await con.QueryAsync<Article>("dbo.ArticlesListAll_1",
+                var gridReader = await con.QueryAsync<Article>("dbo.ArticlesListAll",
                                                                 commandType: CommandType.StoredProcedure);
                 return gridReader;
             }

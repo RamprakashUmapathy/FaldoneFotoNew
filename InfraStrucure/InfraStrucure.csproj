@@ -49,13 +49,15 @@
     <Compile Include="Interfaces\IAsyncRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ArticleCacheRepositoryAsync.cs" />
-    <Compile Include="Repositories\ArticlePriceCacheRepositoryAsync.cs" />
     <Compile Include="Repositories\ArticlePriceRepositoryAsync.cs" />
     <Compile Include="Repositories\ArticleRepositoryAsync.cs" />
+    <Compile Include="Repositories\FavouriteRepositoryAsync.cs" />
     <Compile Include="Repositories\IArticleRepositoryAsync.cs" />
+    <Compile Include="Repositories\IFavouriteRepository.cs" />
     <Compile Include="Repositories\IShopSignRepositoryAsync.cs" />
     <Compile Include="Repositories\IUserRepositoryAsync.cs" />
     <Compile Include="Repositories\ShopSignRepository.cs" />
+    <Compile Include="Repositories\StockGroupRepositoryAsync.cs" />
     <Compile Include="Repositories\UserRepositoryAsync.cs" />
   </ItemGroup>
   <ItemGroup>
